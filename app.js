@@ -20,12 +20,6 @@ const postSchema = new mongoose.Schema({
 
 const Post = mongoose.model("Post", postSchema);
 
-// TODO: make posts work 
-const posts = Post.find({}).then(function (posts) {
-  console.log(posts);
-  return posts;
-});
-
 /* const posts = [
   {title: "Test", content:""},
   {title: "The Force?", 
@@ -44,7 +38,7 @@ const king = new Post({
   content: "I don't want to talk to you no more, you empty-headed animal food trough water! I fart in your general direction! Your mother was a hamster and your father smelt of elderberries! Now leave before I am forced to taunt you a second time! The Lady of the Lake, her arm clad in the purest shimmering samite, held aloft Excalibur from the bosom of the water, signifying by divine providence that I, Arthur, was to carry Excalibur. That is why I am your king."
 })
 
-Post.insertMany([test, force, king]);
+//Post.insertMany([test, force, king]);
 
 app.set('view engine', 'ejs');
 
@@ -52,7 +46,12 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
 app.get("/", function(req, res) {
-  res.render("home", {homeContent: homeStartingContent, posts: posts});
+  Post.find({}).then((posts) => {
+    res.render("home", {
+      homeContent: homeStartingContent,
+      posts: posts
+      })
+    }).catch((err) => console.error(err));
 });
 
 app.get("/about", function(req, res) {
@@ -68,23 +67,21 @@ app.get("/compose", function(req, res) {
 });
 
 app.get("/posts/:postTitle", function(req, res) {
-  const requestedTitle = _.kebabCase(req.params.postTitle);
+  const requestedTitle = _.lowerCase(req.params.postTitle);
 
   posts.forEach(function(post) {
-    if (_.kebabCase(post.title) === requestedTitle) {
+    if (_.lowercase(post.title) === requestedTitle) {
       res.render("post", {title: post.title, content: post.content});
     };
   })});
 
 app.post("/compose", function(req, res) { 
-  const post = {
+  const post = new Post ({
     title: req.body.postTitle,
     content: req.body.postContent
-  };
+  });
 
   post.save();
-
-  posts.push(post);
 
   res.redirect("/");
 });
