@@ -1,4 +1,7 @@
 # blog-website
-Blog website built using JavaScript, EJS, Node.js and Express.js as part of Udemy's 2023 Complete Web Developer Bootcamp
+Blog website built using JavaScript, EJS, Node.js, Express.js, and MongoDB as part of Udemy's 2023 Complete Web Developer Bootcamp
 
-Future iterations will include data persistence using a backend database and user authentication.
+Future improvements:
+- allow image posts
+- admin interface
+- user authentication
