@@ -66,14 +66,13 @@ app.get("/compose", function(req, res) {
   res.render("compose");
 });
 
-app.get("/posts/:postTitle", function(req, res) {
-  const requestedTitle = _.lowerCase(req.params.postTitle);
+app.get("/posts/:postId", function(req, res) {
+  const postId = req.params.postId;
 
-  posts.forEach(function(post) {
-    if (_.lowercase(post.title) === requestedTitle) {
-      res.render("post", {title: post.title, content: post.content});
-    };
-  })});
+  Post.findById(postId).then((post) => {
+    res.render("post", {title: post.title, content: post.content});
+  }).catch((err) => { console.error(err);});
+});
 
 app.post("/compose", function(req, res) { 
   const post = new Post ({
